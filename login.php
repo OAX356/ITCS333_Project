@@ -2,7 +2,14 @@
 require 'db_connection.php'; // Include PDO connection
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (isset($_SESSION['db_error'])) {
+    $error = $_SESSION['db_error'];
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $error == '') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
@@ -13,7 +20,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // session_start();
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             header("Location: dashboard.php");
@@ -26,10 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// session_start();
-if (isset($_SESSION['db_error'])) {
-    $error = $_SESSION['db_error'];
-}
 
 include 'login_form.php';
 ?>

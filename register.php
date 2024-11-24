@@ -2,7 +2,14 @@
 require 'db_connection.php'; // Include PDO connection
 $error = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+if (isset($_SESSION['db_error'])) {
+    $error = $_SESSION['db_error'];
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $error == '') {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
