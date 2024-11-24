@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $error == '') {
             header("Location: login.php?success=1");
             exit();
         } catch (PDOException $e) {
-            $error = ($e->getCode() == 23000) ? "Username or email already exists." : "An error occurred. Please try again.";
+            $error = ($e->getCode() == 23000) ? "Email already exists." : "An error occurred. Please try again.";
         }
     }
 }
