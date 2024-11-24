@@ -34,5 +34,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $error == '') {
         }
     }
 }
-include 'register_form.php';
+include 'includes/register_form.php';
 ?>
