@@ -14,9 +14,6 @@
             <article class="alert error" role="alert"><?php echo htmlspecialchars($error); ?></article>
         <?php endif; ?>
         <form action="register.php" method="POST">
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" placeholder="Enter your username" required>
-
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter your UoB email" required>
 
