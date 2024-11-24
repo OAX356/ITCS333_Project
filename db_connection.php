@@ -10,9 +10,9 @@ try {
     ]);
 } catch (PDOException $e) {
     session_start();
-    $_SESSION['db_error'] = "Error: Could not connect to the database. " . $e->getMessage();
-    header("Location: login.php");
-    exit();
+    $_SESSION['db_error'] = "Error: Could not connect to the database. "; // . $e->getMessage();
+    //header("Location: login.php");
+    //exit();
 }
 
 session_start();
