@@ -121,6 +121,46 @@ button.primary:hover {
     text-decoration: none;
 }
 
+/* Navigation Menu */
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+nav ul li a {
+    text-decoration: none;
+    background-color: #007bff34;
+    color: #007bff;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: #e6f2ff;
+    border-color: #007bff;
+}
+
+/* Booking List */
+section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+section ul li {
+    margin: 0.5rem 0;
+    padding: 0.8rem;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive Design */
 @media (max-width: 700px) {
     h1, h2 {
