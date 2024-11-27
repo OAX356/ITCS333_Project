@@ -27,6 +27,8 @@
             </ul>
         </nav>
 
+        <br>
+        
         <section>
             <h2>Upcoming Bookings</h2>
             <?php if (empty($upcoming_bookings)): ?>
