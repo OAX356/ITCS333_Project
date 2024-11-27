@@ -131,6 +131,7 @@ nav ul {
 }
 
 nav ul li a {
+    text-align: center;
     text-decoration: none;
     background-color: #007bff34;
     color: #007bff;
