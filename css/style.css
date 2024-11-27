@@ -142,6 +142,11 @@ nav ul li a {
     transition: background-color 0.3s, border-color 0.3s;
 }
 
+#logout a {
+    background-color: #ff000034;
+    color: #ff0000;
+}
+
 nav ul li a:hover {
     background-color: #e6f2ff;
     border-color: #007bff;

@@ -23,12 +23,12 @@
                 <?php if ($user_role === 'admin'): ?>
                     <li><a href="admin_panel.php">Admin Panel</a></li>
                 <?php endif; ?>
-                <li><a href="logout.php">Logout</a></li>
+                <li id="logout"><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
 
         <br>
-        
+
         <section>
             <h2>Upcoming Bookings</h2>
             <?php if (empty($upcoming_bookings)): ?>
