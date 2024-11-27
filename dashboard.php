@@ -57,5 +57,5 @@ if ($user_role === 'user') {
     }
 }
 
-
+include 'includes/dashboard_html.php';
 ?>
