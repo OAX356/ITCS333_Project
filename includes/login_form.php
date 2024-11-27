@@ -10,12 +10,19 @@
 <body>
     <main class="container">
         <h1>Login</h1>
+        
+        <?php if (isset($_GET['logout'])): ?>
+            <article class="alert success" role="alert">You have successfully logged out.</article>
+        <?php endif; ?>
+
         <?php if (isset($_GET['success'])): ?>
             <article class="alert success" role="alert">Registration successful! You can now log in.</article>
         <?php endif; ?>
+
         <?php if (!empty($error)): ?>
             <article class="alert error" role="alert"><?php echo htmlspecialchars($error); ?></article>
         <?php endif; ?>
+        
         <form action="login.php" method="POST">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Enter your email" required>
