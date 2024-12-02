@@ -24,15 +24,17 @@ if ($error == '') {
 
         if (!$room) {
             $error = "Room not found.";
-        } else {
+        } 
             // Fetch available timeslots for the room
+        else {
             $timeslot_query = "SELECT * FROM Room_Schedule WHERE room_id = :room_id AND is_available = TRUE ORDER BY timeslot_start";
             $stmt = $pdo->prepare($timeslot_query);
             $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
             $stmt->execute();
             $timeslots = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-    } catch (PDOException $e) {
+    } 
+    catch (PDOException $e) {
         $error = "An error occurred while fetching room details: " . $e->getMessage();
     }
 }
