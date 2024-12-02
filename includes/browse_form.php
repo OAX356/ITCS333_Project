@@ -39,7 +39,6 @@
             <?php if (!empty($rooms)): ?>
                 <?php foreach ($rooms as $room): ?>
                     <div class="room-card">
-                        <img src="<?php echo $room['image_url']; ?>" alt="<?php echo $room['name']; ?>" />
                         <h2><?php echo $room['name']; ?></h2>
                         <p>Capacity: <?php echo $room['capacity']; ?> people</p>
                         <p><?php echo $room['description']; ?></p>
