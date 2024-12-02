@@ -17,14 +17,16 @@ $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $rooms = [];
 
 if ($error == '') {
+    // Query to fetch rooms based on search input
     try {
-        // Query to fetch rooms based on search input
-        $query = "SELECT * FROM Rooms WHERE name LIKE :search";
+        
+        $query = "SELECT * FROM Rooms WHERE name :search";
         $stmt = $pdo->prepare($query);
-        $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        $stmt->bindValue(':search',$search,PDO::PARAM_STR);
         $stmt->execute();
         $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
+    } 
+    catch (PDOException $e) {
         $error = "An error occurred while fetching rooms: " . $e->getMessage();
     }
 }
