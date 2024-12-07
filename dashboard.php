@@ -34,6 +34,7 @@ try {
     $user_role = $user['role'];
     $_SESSION['first_name'] = $first_name;
     $_SESSION['last_name'] = $last_name;
+    $_SESSION['role'] = $user_role;
 } catch (Exception $e) {
     $error = "Error fetching user details.";
 }
