@@ -58,5 +58,5 @@ CREATE TABLE equipment (
     equipment_id INT AUTO_INCREMENT PRIMARY KEY,
     room_id INT,
     equipment_name VARCHAR(100),
-    FOREIGN KEY (room_id) REFERENCES rooms(room_id)
+    FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
