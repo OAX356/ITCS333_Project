@@ -18,10 +18,10 @@
         <nav>
             <ul>
                 <li><a href="profile.php">Manage Profile</a></li>
-                <li><a href="rooms.php">Browse Rooms</a></li>
-                <li><a href="bookings.php">My Bookings</a></li>
+                <li><a href="roomDetails.php">Browse Rooms</a></li>
+                <li><a href="booking_form.php">My Bookings</a></li>
                 <?php if ($user_role === 'admin'): ?>
-                    <li><a href="admin_panel.php">Admin Panel</a></li>
+                    <li><a href="admin.php">Admin Panel</a></li>
                 <?php endif; ?>
                 <li id="logout"><a href="logout.php">Logout</a></li>
             </ul>
