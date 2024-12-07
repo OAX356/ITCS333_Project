@@ -92,6 +92,19 @@ CREATE TABLE `user_profile` (
   `profile_picture` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equipment`
+--
+
+CREATE TABLE `equipment` (
+  `equipment_id` int NOT NULL ,
+  `room_id` int NOT NULL,
+  `equipment_name` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
 --
 -- Indexes for dumped tables
 --
