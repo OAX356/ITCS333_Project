@@ -42,7 +42,7 @@
         <nav>
             <ul>
                 <li><a href="Dashboard.php">Dashboard</a></li>
-                <li><a href="Analytics.php">Analytics</a></li> <!-- Link to Analytics Page -->
+                <li><a href="report.php">Analytics</a></li> <!-- Link to Analytics Page -->
             </ul>
         </nav>
     </main>

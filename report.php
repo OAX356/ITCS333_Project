@@ -14,7 +14,7 @@
 
    
     if ($roomFilter != '') {
-        $query .= " AND r.name LIKE :roomFilter";
+        $query .= " AND r.name = :roomFilter";
     }
     if ($startDate != '') {
         $query .= " AND b.booking_date >= :startDate";
@@ -26,7 +26,7 @@
     // Prepare and execute the query
     $stmt = $pdo->prepare($query);
     if ($roomFilter != '') {
-        $stmt->bindparam(':roomFilter', "%" . $roomFilter . "%");
+        $stmt->bindparam(':roomFilter', $roomFilter); //"%" . $roomFilter . "%");
     }
     if ($startDate != '') {
         $stmt->bindparam(':startDate', $startDate);
