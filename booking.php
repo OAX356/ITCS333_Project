@@ -10,61 +10,92 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+
+$selected = 0;
+$user_id = $_SESSION["user_id"];
+
 // Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Validate inputs
-    $roomId = isset($_POST['room_id']) ? intval($_POST['room_id']) : null;
-    $scheduleId = isset($_POST['schedule_id']) ? intval($_POST['schedule_id']) : null;
-    $userId = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
-    if (!$roomId || !$scheduleId || !$userId) {
-        echo "Invalid input. Please ensure all fields are filled out.";
-        exit;
-    }
+    $bookings = [];
+    if ($_GET['filter_selector'] == 'all') {
+        $selected = 0;
+        try {
+            $stmt = $pdo->prepare("
+                SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end, b.status, b.room_id
+                FROM Bookings b
+                INNER JOIN Rooms r ON b.room_id = r.id
+                INNER JOIN Room_Schedule rs ON b.schedule_id = rs.id
+                WHERE b.user_id = :user_id
+                ORDER BY rs.timeslot_start ASC
+            ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $bookings = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            $error = "Error fetching bookings.";
+        }
 
-    // Check if the time slot is still available
-    $checkQuery = "SELECT is_available FROM room_schedule WHERE id = ? AND is_available = 1";
-    $stmt = $conn->prepare($checkQuery);
-    $stmt->bind_param('i', $scheduleId);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    } elseif ($_GET['filter_selector'] == 'up') {
+        $selected = 1;
+        try {
+            $stmt = $pdo->prepare("
+                SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end, b.status, b.room_id
+                FROM Bookings b
+                INNER JOIN Rooms r ON b.room_id = r.id
+                INNER JOIN Room_Schedule rs ON b.schedule_id = rs.id
+                WHERE b.user_id = :user_id AND rs.timeslot_start > NOW()
+                ORDER BY rs.timeslot_start ASC
+            ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $bookings = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            $error = "Error fetching bookings.";
+        }
 
-    if ($result->num_rows === 0) {
-        echo "The selected time slot is no longer available.";
-        exit;
-    }
-
-    // Check for double booking (if the user has already booked the same slot)
-    $conflictQuery = "SELECT * FROM bookings WHERE user_id = ? AND schedule_id = ?";
-    $stmt = $conn->prepare($conflictQuery);
-    $stmt->bind_param('ii', $userId, $scheduleId);
-    $stmt->execute();
-    $conflictResult = $stmt->get_result();
-
-    if ($conflictResult->num_rows > 0) {
-        echo "You have already booked this time slot.";
-        exit;
-    }
-
-    // Insert the booking into the database
-    $insertQuery = "INSERT INTO bookings (user_id, room_id, schedule_id, booking_time) VALUES (?, ?, ?, NOW())";
-    $stmt = $conn->prepare($insertQuery);
-    $stmt->bind_param('iii', $userId, $roomId, $scheduleId);
-
-    if ($stmt->execute()) {
-        // Update the schedule to mark it as unavailable
-        $updateQuery = "UPDATE room_schedule SET is_available = 0 WHERE id = ?";
-        $stmt = $conn->prepare($updateQuery);
-        $stmt->bind_param('i', $scheduleId);
-        $stmt->execute();
-
-        echo "Booking successful! Thank you for your reservation.";
+    } elseif ($_GET['filter_selector'] == 'now') {
+        $selected = 2;
+        try {
+            $stmt = $pdo->prepare("
+                SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end, b.status, b.room_id
+                FROM Bookings b
+                INNER JOIN Rooms r ON b.room_id = r.id
+                INNER JOIN Room_Schedule rs ON b.schedule_id = rs.id
+                WHERE b.user_id = :user_id AND rs.timeslot_start <= NOW() AND rs.timeslot_end >= NOW()
+                ORDER BY rs.timeslot_start ASC
+            ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $bookings = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            $error = "Error fetching bookings.";
+        }
+        
+    } elseif ($_GET['filter_selector'] == 'ex') {
+        $selected = 3;
+        try {
+            $stmt = $pdo->prepare("
+                SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end, b.status, b.room_id
+                FROM Bookings b
+                INNER JOIN Rooms r ON b.room_id = r.id
+                INNER JOIN Room_Schedule rs ON b.schedule_id = rs.id
+                WHERE b.user_id = :user_id AND rs.timeslot_end < NOW()
+                ORDER BY rs.timeslot_start ASC
+            ");
+            $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $bookings = $stmt->fetchAll();
+        } catch (PDOException $e) {
+            $error = "Error fetching bookings.";
+        }
+        
     } else {
-        echo "An error occurred while processing your booking. Please try again.";
+        $selected = 4;
+        $error = 'Invalid filer value.';
     }
-
-    $stmt->close();
-    $conn->close();
 } else {
-    echo "Invalid request method.";
+    $error =  "Invalid request method.";
 }
+
+include 'booking_form.php';

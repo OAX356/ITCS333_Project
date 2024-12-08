@@ -19,7 +19,7 @@
             <ul>
                 <li><a href="profile.php">Manage Profile</a></li>
                 <li><a href="browse.php">Browse Rooms</a></li>
-                <li><a href="booking_form.php">My Bookings</a></li>
+                <li><a href="booking.php?filter_selector=all">My Bookings</a></li>
                 <?php if ($user_role === 'admin'): ?>
                     <li><a href="admin.php">Admin Panel</a></li>
                 <?php endif; ?>
