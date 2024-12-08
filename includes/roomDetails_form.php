@@ -9,7 +9,7 @@
 </head>
 <body>
     <main class="container">
-        <!-- Display error message if any -->
+        <!-- if there error display message if not display the room name -->
         <?php if (!empty($error)): ?>
             <article class="alert error" role="alert">
                 <?php echo $error; ?>
