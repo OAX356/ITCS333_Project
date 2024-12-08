@@ -1,13 +1,16 @@
 <?php
-session_start();
+require_once 'db_connection.php';
+$error = '';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if the user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
-
-require_once 'db_connection.php';
 
 // Handle room management actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,44 +60,72 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Admin Panel</h1>
-    <h2>Room Management</h2>
+    <main class="container">
+        <h1>Admin Panel</h1>
+        <h2>Room Management</h2>
 
-    <form method="POST">
-        <input type="hidden" name="action" value="add_room">
-        <label for="name">Room Name:</label>
-        <input type="text" id="name" name="name" required>
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea>
-        <label for="capacity">Capacity:</label>
-        <input type="number" id="capacity" name="capacity" required>
-        <label for="equipment">Equipment:</label>
-        <textarea id="equipment" name="equipment" required></textarea>
-        <button type="submit">Add Room</button>
-    </form>
-
-    <h3>Existing Rooms</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Capacity</th>
-                <th>Equipment</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($rooms as $room): ?>
+        <form method="POST">
+            <input type="hidden" name="action" value="add_room">
+            <label for="name">Room Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+            <label for="capacity">Capacity:</label>
+            <input type="number" id="capacity" name="capacity" required>
+            <label for="equipment">Equipment:</label>
+            <textarea id="equipment" name="equipment" required></textarea>
+            <button type="submit">Add Room</button>
+        </form>
+        <br>
+        <p style="text-align: center;"><a href="dashboard.php">Return to Dashboard</a></p>
+        <br>
+        <h3>Existing Rooms</h3>
+        <br>
+        <table>
+            <thead>
                 <tr>
-                    <td><?= htmlspecialchars($room['id']) ?></td>
-                    <td><?= htmlspecialchars($room['name']) ?></td>
-                    <td><?= htmlspecialchars($room['description']) ?></td>
-                    <td><?= htmlspecialchars($room['capacity']) ?></td>
-                    <td><?= htmlspecialchars($room['equipment']) ?></td>
-                    <td>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Capacity</th>
+                    <th>Equipment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($rooms as $room): ?>
+                    <tr>
                         <form method="POST" style="display:inline;">
+                            <td><?= htmlspecialchars($room['id']) ?></td>
+                            <td><input type="text" id="name" name="name" required value="<?= htmlspecialchars($room['name']) ?>"></td>
+                            <td><textarea id="description" name="description" required><?= htmlspecialchars($room['description']) ?></textarea></td>
+                            <td><input type="number" id="capacity" name="capacity" required value="<?= htmlspecialchars($room['capacity']) ?>"></td>
+                            <td><textarea id="equipment" name="equipment" required><?= htmlspecialchars($room['equipment']) ?></textarea></td>
+                            <td>
+                                <input type="hidden" name="action" value="edit_room">
+                                <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
+                                <button type="submit">Edit</button>
+                        </form>
+                        <td>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="action" value="delete_room">
+                                <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <?php foreach ($rooms as $room): ?>
+                <article>
+                        <form method="POST" style="display:inline;">
+                            <p><?= htmlspecialchars($room['id']) ?></p>
+                            <input type="text" id="name" name="name" required value="<?= htmlspecialchars($room['name']) ?>">
+                            <textarea id="description" name="description" required><?= htmlspecialchars($room['description']) ?></textarea>
+                            <input type="number" id="capacity" name="capacity" required value="<?= htmlspecialchars($room['capacity']) ?>">
+                            <textarea id="equipment" name="equipment" required><?= htmlspecialchars($room['equipment']) ?></textarea>
                             <input type="hidden" name="action" value="edit_room">
                             <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
                             <button type="submit">Edit</button>
@@ -104,11 +135,8 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
                             <button type="submit">Delete</button>
                         </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
+            </article>
+        <?php endforeach; ?>
+    </main>
 </body>
 </html>
