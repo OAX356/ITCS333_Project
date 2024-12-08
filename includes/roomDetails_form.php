@@ -15,7 +15,7 @@
                 <?php echo $error; ?>
             </article>
         <?php else: ?>
-            <h1><?php echo $room['room_name']; ?></h1>
+            <h1><?php echo $room['name']; ?></h1>
 
             <!-- Display room details -->
             <div class="room-details">
@@ -63,13 +63,15 @@
             <!-- Check if the user already has a booking and display a cancel button -->
             <?php if (!empty($user_booking)): ?>
                 <h3>Your current booking:</h3>
-                <p>You have already booked this room for the timeslot: 
-                    <?php echo date('Y-m-d H:i', strtotime($user_booking['timeslot_start'])); ?> to 
-                    <?php echo date('Y-m-d H:i', strtotime($user_booking['timeslot_end'])); ?>
-                </p>
-                <a href="roomDetails.php?room_id=<?php echo $room_id; ?>&cancel_booking_id=<?php echo $user_booking['id']; ?>" class="button">Cancel Booking</a>
+                <?php foreach ($user_booking as $booking): ?>
+                    <p>You have already booked this room for the timeslot: 
+                    <?php echo date('Y-m-d H:i', strtotime($all_timeslots[$booking["schedule_id"] - 1]['timeslot_start'])); ?> to 
+                    <?php echo date('Y-m-d H:i', strtotime($all_timeslots[$booking["schedule_id"] - 1]['timeslot_end'])); ?>
+                    </p>
+                    <a href="roomDetails.php?room_id=<?php echo $room_id; ?>&cancel_booking_id=<?php echo $booking['id']; ?>" class="button">Cancel Booking</a>
+                <?php endforeach; ?>
             <?php endif; ?>
-
+            <br>
             <a href="browse.php" class="button">Back to Browse</a>
         <?php endif; ?>
     </main>

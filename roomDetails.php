@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+$user_id = $_SESSION["user_id"];
 
 // Get the room ID from the query string
 $room_id = isset($_GET['room_id']) ? intval($_GET['room_id']) : 0;
@@ -19,7 +20,7 @@ if ($error == '') {
         // Fetch room details
         $query = "SELECT * FROM rooms WHERE id = :room_id";
         $stmt = $pdo->prepare($query);
-        $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
+        $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
         $stmt->execute();
         $room = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -29,9 +30,23 @@ if ($error == '') {
             // Fetch available timeslots for the room
             $timeslot_query = "SELECT * FROM Room_Schedule WHERE room_id = :room_id AND is_available = TRUE ORDER BY timeslot_start";
             $stmt = $pdo->prepare($timeslot_query);
-            $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
+            $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
             $stmt->execute();
             $timeslots = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            // Check if the user already has a booking for this room
+            $check_booking = "SELECT * FROM Bookings WHERE user_id = :user_id AND room_id = :room_id";
+            $stmt = $pdo->prepare($check_booking);
+            $stmt->bindparam(':user_id', $user_id, PDO::PARAM_INT);
+            $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $user_booking = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $timeslot_query = "SELECT * FROM Room_Schedule WHERE room_id = :room_id ORDER BY timeslot_start";
+            $stmt = $pdo->prepare($timeslot_query);
+            $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $all_timeslots = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         // booking 
@@ -40,31 +55,42 @@ if ($error == '') {
 
             if ($timeslot_id > 0) {
                 // Check if the user already has a booking for this room at the selected timeslot
-                $check_booking = "SELECT * FROM Bookings WHERE user_id = :user_id AND room_id = :room_id AND timeslot_id = :timeslot_id";
+                $check_booking = "SELECT * FROM Bookings WHERE user_id = :user_id AND room_id = :room_id AND schedule_id = :timeslot_id";
                 $stmt = $pdo->prepare($check_booking);
-                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-                $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
-                $stmt->bindValue(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
+                $stmt->bindparam(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
+                $stmt->bindparam(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
                 $stmt->execute();
 
                 if ($stmt->rowCount() > 0) {
                     $error = "You have already booked this room for the selected timeslot.";
                 } else {
-                    // Insert the booking into the Bookings table
-                    $book_query = "INSERT INTO Bookings (user_id, room_id, timeslot_id) VALUES (:user_id, :room_id, :timeslot_id)";
-                    $stmt = $pdo->prepare($book_query);
-                    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-                    $stmt->bindValue(':room_id', $room_id, PDO::PARAM_INT);
-                    $stmt->bindValue(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
-                    $stmt->execute();
+                    try {
 
-                    // Mark the timeslot as unavailable
-                    $update_schedule_query = "UPDATE Room_Schedule SET is_available = FALSE WHERE id = :timeslot_id";
-                    $stmt = $pdo->prepare($update_schedule_query);
-                    $stmt->bindValue(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
-                    $stmt->execute();
+                        $pdo->beginTransaction();
+                        // Insert the booking into the Bookings table
+                        $book_query = "INSERT INTO Bookings (user_id, room_id, schedule_id) VALUES (:user_id, :room_id, :timeslot_id)";
+                        $stmt = $pdo->prepare($book_query);
+                        $stmt->bindparam(':user_id', $user_id, PDO::PARAM_INT);
+                        $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
+                        $stmt->bindparam(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
+                        $stmt->execute();
 
-                    $success_message = "Your booking has been confirmed!";
+                        // Mark the timeslot as unavailable
+                        $update_schedule_query = "UPDATE Room_Schedule SET is_available = FALSE WHERE id = :timeslot_id";
+                        $stmt = $pdo->prepare($update_schedule_query);
+                        $stmt->bindparam(':timeslot_id', $timeslot_id, PDO::PARAM_INT);
+                        $stmt->execute();
+
+                        $pdo->commit();
+                        $success_message = "Your booking has been confirmed!";
+
+                        header("location: roomDetails.php?room_id=$room_id");
+                        exit();
+                    } catch(PDOException $e) {
+                        $pdo->rollBack();
+                        $error = "The booking insertion is failed: " . $e->getMessage();
+                    }
                 }
             } else {
                 $error = "Please select a valid timeslot.";
@@ -78,25 +104,34 @@ if ($error == '') {
                 // Fetch the booking details
                 $cancel_query = "SELECT * FROM Bookings WHERE id = :booking_id AND user_id = :user_id";
                 $stmt = $pdo->prepare($cancel_query);
-                $stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
-                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                $stmt->bindparam(':booking_id', $booking_id, PDO::PARAM_INT);
+                $stmt->bindparam(':user_id', $user_id, PDO::PARAM_INT);
                 $stmt->execute();
                 $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($booking) {
-                    // Cancel the booking (delete from Bookings table)
-                    $delete_query = "DELETE FROM Bookings WHERE id = :booking_id";
-                    $stmt = $pdo->prepare($delete_query);
-                    $stmt->bindValue(':booking_id', $booking_id, PDO::PARAM_INT);
-                    $stmt->execute();
+                    try {
+                        $pdo->beginTransaction();
+                        // Cancel the booking (delete from Bookings table)
+                        $delete_query = "DELETE FROM Bookings WHERE id = :booking_id";
+                        $stmt = $pdo->prepare($delete_query);
+                        $stmt->bindparam(':booking_id', $booking_id, PDO::PARAM_INT);
+                        $stmt->execute();
 
-                    // Make the timeslot available again
-                    $update_schedule_query = "UPDATE Room_Schedule SET is_available = TRUE WHERE id = :timeslot_id";
-                    $stmt = $pdo->prepare($update_schedule_query);
-                    $stmt->bindValue(':timeslot_id', $booking['timeslot_id'], PDO::PARAM_INT);
-                    $stmt->execute();
+                        // Make the timeslot available again
+                        $update_schedule_query = "UPDATE Room_Schedule SET is_available = TRUE WHERE id = :timeslot_id";
+                        $stmt = $pdo->prepare($update_schedule_query);
+                        $stmt->bindparam(':timeslot_id', $booking['schedule_id'], PDO::PARAM_INT);
+                        $stmt->execute();
 
-                    $success_message = "Your booking has been cancelled successfully.";
+                        $pdo->commit();
+                        $success_message = "Your booking has been cancelled successfully.";
+
+                        header("location: roomDetails.php?room_id=$room_id");
+                        exit();
+                    } catch(PDOException $e) {
+                        $error = "The Cancellation is failed: " . $e->getMessage();
+                    }
                 } else {
                     $error = "Booking not found or you cannot cancel this booking.";
                 }
