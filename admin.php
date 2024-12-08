@@ -117,26 +117,6 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php endforeach; ?>
             </tbody>
         </table>
-
-        <?php foreach ($rooms as $room): ?>
-                <article>
-                        <form method="POST" style="display:inline;">
-                            <p><?= htmlspecialchars($room['id']) ?></p>
-                            <input type="text" id="name" name="name" required value="<?= htmlspecialchars($room['name']) ?>">
-                            <textarea id="description" name="description" required><?= htmlspecialchars($room['description']) ?></textarea>
-                            <input type="number" id="capacity" name="capacity" required value="<?= htmlspecialchars($room['capacity']) ?>">
-                            <textarea id="equipment" name="equipment" required><?= htmlspecialchars($room['equipment']) ?></textarea>
-                            <input type="hidden" name="action" value="edit_room">
-                            <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form method="POST" style="display:inline;">
-                            <input type="hidden" name="action" value="delete_room">
-                            <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
-                            <button type="submit">Delete</button>
-                        </form>
-            </article>
-        <?php endforeach; ?>
     </main>
 </body>
 </html>
