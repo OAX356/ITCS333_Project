@@ -40,6 +40,8 @@
                             <strong><?php echo htmlspecialchars($booking['room_name']); ?></strong><br>
                             <?php echo date("D, M j, Y h:i A", strtotime($booking['timeslot_start'])); ?> - 
                             <?php echo date("h:i A", strtotime($booking['timeslot_end'])); ?>
+                            <?php echo $booking["status"]; ?>
+                            <a href="roomDetails.php?room_id=<?php echo $booking['room_id']; ?>" class="button">View Details</a>
                         </li>
                     <?php endforeach; ?>
                 </ul>

@@ -41,14 +41,14 @@ try {
 
 // Fetch upcoming bookings for the user
 $upcoming_bookings = [];
-if ($user_role === 'user') {
+if (true) {
     try {
         $stmt = $pdo->prepare("
-            SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end
+            SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end, b.status, b.room_id
             FROM Bookings b
             INNER JOIN Rooms r ON b.room_id = r.id
             INNER JOIN Room_Schedule rs ON b.schedule_id = rs.id
-            WHERE b.user_id = :user_id AND b.status = 'confirmed' AND rs.timeslot_end > NOW()
+            WHERE b.user_id = :user_id AND rs.timeslot_end > NOW()
             ORDER BY rs.timeslot_start ASC
             LIMIT 3
         ");
