@@ -1,5 +1,5 @@
 <?php
-    include('db_connection.php'); 
+    require_once 'db_connection.php'; 
 
     
     $roomFilter = isset($_GET['roomFilter']) ? $_GET['roomFilter'] : '';
@@ -26,13 +26,13 @@
     // Prepare and execute the query
     $stmt = $pdo->prepare($query);
     if ($roomFilter != '') {
-        $stmt->bindValue(':roomFilter', "%" . $roomFilter . "%");
+        $stmt->bindparam(':roomFilter', "%" . $roomFilter . "%");
     }
     if ($startDate != '') {
-        $stmt->bindValue(':startDate', $startDate);
+        $stmt->bindparam(':startDate', $startDate);
     }
     if ($endDate != '') {
-        $stmt->bindValue(':endDate', $endDate);
+        $stmt->bindparam(':endDate', $endDate);
     }
     $stmt->execute();
     $roomPopularity = $stmt->fetchAll(PDO::FETCH_ASSOC);

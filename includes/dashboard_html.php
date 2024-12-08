@@ -23,6 +23,7 @@
                 <?php if ($user_role === 'admin'): ?>
                     <li><a href="admin.php">Admin Panel</a></li>
                 <?php endif; ?>
+                <li><a href="includes/Report_form.php">Report</a></li>
                 <li id="logout"><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
