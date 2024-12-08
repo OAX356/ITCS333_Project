@@ -9,7 +9,7 @@
 </head>
 <body>
     <main class="container">
-        <h1>Rooms <?php echo $first_name . ' ' . $last_name; ?></h1>
+        <h1>Rooms <?php echo $_SESSION["first_name"] . ' ' . $_SESSION["last_name"]; ?></h1>
 
         <?php if (!empty($error)): ?>
             <article class="alert error"><?php echo $error; ?></article>
@@ -20,7 +20,7 @@
                 <li><a href="profile.php">Manage Profile</a></li>
                 <li><a href="browse.php">Rooms</a></li>
                 <li><a href="bookings.php">My Bookings</a></li>
-                <?php if ($user_role === 'admin'): ?>
+                <?php if ($_SESSION["role"] === 'admin'): ?>
                     <li><a href="admin_panel.php">Admin Panel</a></li>
                 <?php endif; ?>
                 <li id="logout"><a href="logout.php">Logout</a></li>
@@ -42,7 +42,7 @@
                         <h2><?php echo $room['name']; ?></h2>
                         <p>Capacity: <?php echo $room['capacity']; ?> people</p>
                         <p><?php echo $room['description']; ?></p>
-                        <a href="room_details.php?room_id=<?php echo $room['id']; ?>" class="button">View Details</a>
+                        <a href="roomDetails.php?room_id=<?php echo $room['id']; ?>" class="button">View Details</a>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>

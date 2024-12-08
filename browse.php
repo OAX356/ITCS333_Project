@@ -20,11 +20,19 @@ if ($error == '') {
     // Query to fetch rooms based on search input
     try {
         
-        $query = "SELECT * FROM Rooms WHERE name :search";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindValue(':search',$search,PDO::PARAM_STR);
-        $stmt->execute();
-        $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (empty($search)) {
+            $query = "SELECT * FROM Rooms";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute();
+            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        else {
+            $query = "SELECT * FROM Rooms WHERE name = :search";
+            $stmt = $pdo->prepare($query);
+            $stmt->bindparam(':search',$search,PDO::PARAM_STR);
+            $stmt->execute();
+            $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
     } 
     catch (PDOException $e) {
         $error = "An error occurred while fetching rooms: " . $e->getMessage();
