@@ -18,7 +18,7 @@
         <nav>
             <ul>
                 <li><a href="profile.php">Manage Profile</a></li>
-                <li><a href="rooms.php">Rooms</a></li>
+                <li><a href="browse.php">Rooms</a></li>
                 <li><a href="bookings.php">My Bookings</a></li>
                 <?php if ($user_role === 'admin'): ?>
                     <li><a href="admin_panel.php">Admin Panel</a></li>
