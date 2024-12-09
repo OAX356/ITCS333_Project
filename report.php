@@ -45,7 +45,7 @@ try {
     $stmt->execute(['user_id' => $user_id]);
     $upcomingBookings = $stmt->fetchAll();
 } catch (PDOException $e) {
-    die("Error fetching analytics data: " . $e->getMessage());
+    die("Error fetching report data: " . $e->getMessage());
 }
 ?>
 
@@ -54,12 +54,12 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics</title>
+    <title>Report</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <main class="container">
-        <h1>Analytics</h1>
+        <h1>Report</h1>
 
         <section>
             <h2>Room Popularity</h2>
