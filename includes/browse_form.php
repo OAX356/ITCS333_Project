@@ -22,12 +22,14 @@
 
         <nav>
             <ul>
-                <li><a href="profile.php">Manage Profile</a></li>
                 <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="booking.php">My Bookings</a></li>
+                <?php if ($_SESSION["role"] === 'user'): ?>
+                    <li><a href="booking.php">My Bookings</a></li>
+                <?php endif; ?>
                 <?php if ($_SESSION["role"] === 'admin'): ?>
                     <li><a href="admin.php">Admin Panel</a></li>
                 <?php endif; ?>
+                <li><a href="Report_form.php">Report</a></li>
                 <li id="logout"><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
