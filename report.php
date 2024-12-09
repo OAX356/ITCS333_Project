@@ -60,7 +60,7 @@ try {
 <body>
     <main class="container">
         <h1>Report</h1>
-
+        <p style="text-align: center;"><a href="Report_form.php">Report Filter</a></p>
         <section>
             <h2>Room Popularity</h2>
             <ul>

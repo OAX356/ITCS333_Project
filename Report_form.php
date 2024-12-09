@@ -24,7 +24,7 @@
 
         <nav>
             <ul>
-                <li><a href="Dashboard.php">Dashboard</a></li>
+                <li><a href="dashboard.php">Dashboard</a></li>
                 <li><a href="report.php">Report</a></li>
             </ul> 
             
