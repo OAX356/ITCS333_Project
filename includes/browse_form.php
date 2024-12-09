@@ -9,7 +9,12 @@
 </head>
 <body>
     <main class="container">
-        <h1>Rooms <?php echo $_SESSION["first_name"] . ' ' . $_SESSION["last_name"]; ?></h1>
+        <!-- Display Profile Image -->
+        <section style="text-align: center;">
+            <img src="<?php echo "uploads/" . htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+        </section>
+
+        <h1>Rooms</h1>
 
         <?php if (!empty($error)): ?>
             <article class="alert error"><?php echo $error; ?></article>
