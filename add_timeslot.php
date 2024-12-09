@@ -86,7 +86,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 }
 
 // Fetch all time slots for this room
-$stmt = $pdo->prepare("SELECT * FROM Room_Schedule WHERE room_id = ? ORDER BY timeslot_start");
+$stmt = $pdo->prepare("SELECT rs.id, rs.room_id, rs.timeslot_start, rs.timeslot_end, rs.is_available, b.user_id
+                        FROM Room_Schedule rs
+                        LEFT JOIN Bookings AS b ON rs.id = b.schedule_id AND rs.room_id = b.room_id 
+                        WHERE rs.room_id = ? 
+                        ORDER BY timeslot_start");
 $stmt->execute([$room_id]);
 $time_slots = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -128,6 +132,7 @@ $time_slots = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Start Time</th>
                         <th>End Time</th>
                         <th>Availability</th>
+                        <th>User ID</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -138,6 +143,7 @@ $time_slots = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($slot['timeslot_start']) ?></td>
                             <td><?= htmlspecialchars($slot['timeslot_end']) ?></td>
                             <td><?= $slot['is_available'] ? 'Available' : 'Unavailable' ?></td>
+                            <td><?= $slot['is_available'] ? 'NULL' : $slot['user_id'] ?></td>
                             <td>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="action" value="delete_timeslot">
