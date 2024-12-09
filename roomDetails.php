@@ -28,7 +28,7 @@ if ($error == '') {
             $error = "Room not found.";
         } else {
             // Fetch available timeslots for the room
-            $timeslot_query = "SELECT * FROM Room_Schedule WHERE room_id = :room_id AND is_available = TRUE ORDER BY timeslot_start";
+            $timeslot_query = "SELECT * FROM Room_Schedule WHERE room_id = :room_id AND is_available = TRUE AND timeslot_end > NOW() ORDER BY timeslot_start";
             $stmt = $pdo->prepare($timeslot_query);
             $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
             $stmt->execute();
