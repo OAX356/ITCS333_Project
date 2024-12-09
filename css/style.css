@@ -213,7 +213,6 @@ body {
     padding: 20px;
 }
 
-/* Main Container */
 .container {
     max-width: 1000px;
     margin: 2rem auto;
@@ -233,7 +232,6 @@ h2 {
     margin-top: 30px;
 }
 
-/* Form Styling */
 form {
     display: flex;
     flex-direction: column;
@@ -272,7 +270,16 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* List Styling */
+section {
+    margin-bottom: 20px;
+}
+
+section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+}
+
 ul {
     list-style: none;
     margin-top: 20px;
@@ -292,14 +299,12 @@ strong {
     color: #007bff;
 }
 
-/* Chart */
 canvas {
     margin-top: 20px;
     width: 100%;
     max-height: 400px;
 }
 
-/* Navigation Bar */
 nav ul {
     display: flex;
     justify-content: center;
@@ -323,7 +328,6 @@ nav ul li a:hover {
     border-color: #007bff;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     h1, h2 {
         font-size: 1.5rem;
