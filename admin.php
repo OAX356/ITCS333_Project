@@ -89,7 +89,9 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Description</th>
                     <th>Capacity</th>
                     <th>Equipment</th>
-                    <th>Actions</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>Time slots</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,11 +112,11 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <form method="POST" style="display:inline;">
                                 <input type="hidden" name="action" value="delete_room">
                                 <input type="hidden" name="room_id" value="<?= $room['id'] ?>">
-                                <button type="submit">Delete</button>
+                                <button type="submit" style='background-color: red;'>Delete</button>
                             </form>
                         </td>
                         <td>
-                            <a href="add_timeslot.php?room_id=<?= $room['id'] ?>"><button type="button">Add Time Slots</button></a>
+                            <a href="add_timeslot.php?room_id=<?= $room['id'] ?>"><button type="button">Time Slots</button></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
