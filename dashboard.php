@@ -27,8 +27,9 @@ try {
     if (!$user) {
         throw new Exception("User not found.");
     }
-
-    $first_name = $user['first_name'] ?? 'User';
+    
+    if ($user['role'] == "user") $first_name = $user['first_name'] ?? 'User';
+    else $first_name = $user['first_name'] ?? 'Admin';
     $last_name = $user['last_name'] ?? '';
     $email = $user['email'];
     $user_role = $user['role'];
