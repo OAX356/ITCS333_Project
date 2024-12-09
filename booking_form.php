@@ -10,6 +10,11 @@
 
 <body>
     <div class="container mt-5">
+        <!-- Display Profile Image -->
+        <section style="text-align: center;">
+            <img src="<?php echo "uploads/" . htmlspecialchars($_SESSION['profile_picture']); ?>" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+        </section>
+        
         <h2 class="text-center">My Bookings</h2>
 
         <?php if (!empty($error)): ?>
