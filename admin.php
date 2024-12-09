@@ -113,6 +113,9 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <button type="submit">Delete</button>
                             </form>
                         </td>
+                        <td>
+                            <a href="add_timeslot.php?room_id=<?= $room['id'] ?>"><button type="button">Add Time Slots</button></a>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
