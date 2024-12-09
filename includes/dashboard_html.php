@@ -9,6 +9,16 @@
 </head>
 <body>
     <main class="container">
+        <!-- Display Profile Image -->
+        <section style="text-align: center;">
+            <?php 
+            $profile_picture_path = isset($user['profile_picture']) && !empty($user['profile_picture']) 
+                                    ? "uploads" . htmlspecialchars($user['profile_picture']) 
+                                    : 'uploads/default_1.png';
+            ?>
+            <img src="<?php echo $profile_picture_path; ?>" alt="Profile Picture" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
+        </section>
+
         <h1>Welcome, <?php echo htmlspecialchars($first_name . ' ' . $last_name); ?>!</h1>
 
         <?php if (!empty($error)): ?>

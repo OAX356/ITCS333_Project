@@ -16,7 +16,7 @@ $user_role = 'user';
 
 // Fetch user details and role
 try {
-    $stmt = $pdo->prepare("SELECT u.id, u.email, u.role, p.first_name, p.last_name 
+    $stmt = $pdo->prepare("SELECT u.id, u.email, u.role, p.first_name, p.last_name, p.profile_picture
                            FROM Users u
                            LEFT JOIN User_Profile p ON u.id = p.user_id 
                            WHERE u.id = :user_id");
@@ -35,6 +35,7 @@ try {
     $_SESSION['first_name'] = $first_name;
     $_SESSION['last_name'] = $last_name;
     $_SESSION['role'] = $user_role;
+    $_SESSION['profile_picture'] = $user['profile_picture'] ?? 'default_1.png';
 } catch (Exception $e) {
     $error = "Error fetching user details.";
 }
