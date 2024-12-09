@@ -1,53 +1,52 @@
 <?php
-    require_once 'db_connection.php'; 
+require 'db_connection.php';
 
-    
-    $roomFilter = isset($_GET['roomFilter']) ? $_GET['roomFilter'] : '';
-    $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
-    $endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-    
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['role'] ?? 'user';
+$first_name = $_SESSION['first_name'] ?? '';
+$last_name = $_SESSION['last_name'] ?? '';
+
+$roomFilter = $_GET['roomFilter'] ?? '';
+$startDate = $_GET['startDate'] ?? '';
+$endDate = $_GET['endDate'] ?? '';
+
+try {
     $query = "SELECT r.name AS room_name, COUNT(b.id) AS total_bookings
               FROM Rooms r
               LEFT JOIN Bookings b ON r.id = b.room_id
-              WHERE 1"; 
-
-   
-    if ($roomFilter != '') {
-        $query .= " AND r.name = :roomFilter";
-    }
-    if ($startDate != '') {
-        $query .= " AND b.booking_date >= :startDate";
-    }
-    if ($endDate != '') {
-        $query .= " AND b.booking_date <= :endDate";
-    }
-
-    // Prepare and execute the query
+              WHERE 1";
+    if ($roomFilter) $query .= " AND r.name LIKE :roomFilter";
+    if ($startDate) $query .= " AND b.created_at >= :startDate";
+    if ($endDate) $query .= " AND b.created_at <= :endDate";
+    $query .= " GROUP BY r.name ORDER BY total_bookings DESC";
     $stmt = $pdo->prepare($query);
-    if ($roomFilter != '') {
-        $stmt->bindparam(':roomFilter', $roomFilter); //"%" . $roomFilter . "%");
-    }
-    if ($startDate != '') {
-        $stmt->bindparam(':startDate', $startDate);
-    }
-    if ($endDate != '') {
-        $stmt->bindparam(':endDate', $endDate);
-    }
+    if ($roomFilter) $stmt->bindValue(':roomFilter', '%' . $roomFilter . '%');
+    if ($startDate) $stmt->bindValue(':startDate', $startDate);
+    if ($endDate) $stmt->bindValue(':endDate', $endDate);
     $stmt->execute();
-    $roomPopularity = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $roomPopularity = $stmt->fetchAll();
 
-    
-    $user_id = $_SESSION['user_id']; 
-    $query = "SELECT b.id AS booking_id, r.name AS room_name, s.timeslot_start, s.timeslot_end
-              FROM Bookings b
-              JOIN Rooms r ON b.room_id = r.id
-              JOIN Room_Schedule s ON b.schedule_id = s.id
-              WHERE b.user_id = :user_id AND s.timeslot_start > NOW()
-              ORDER BY s.timeslot_start";
-    $stmt = $pdo->prepare($query);
+    $bookingQuery = "SELECT r.name AS room_name, rs.timeslot_start, rs.timeslot_end
+                     FROM Bookings b
+                     JOIN Rooms r ON b.room_id = r.id
+                     JOIN Room_Schedule rs ON b.schedule_id = rs.id
+                     WHERE b.user_id = :user_id AND rs.timeslot_start > NOW()
+                     ORDER BY rs.timeslot_start";
+    $stmt = $pdo->prepare($bookingQuery);
     $stmt->execute(['user_id' => $user_id]);
-    $upcomingBookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $upcomingBookings = $stmt->fetchAll();
+} catch (PDOException $e) {
+    die("Error fetching analytics data: " . $e->getMessage());
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,56 +54,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard</title>
-    <link rel="stylesheet" href="1-css/analytics.css"> <!-- Custom styles -->
+    <title>Analytics</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav>
-        <ul>
-            <li><a href="Dashboard.php">Dashboard</a></li>
-            <li><a href="Analytics.php">Analytics</a></li> <!-- Link to Analytics Page -->
-        </ul>
-    </nav>
+    <main class="container">
+        <h1>Analytics</h1>
 
-    <div class="container">
-        <h1>Analytics Dashboard</h1>
+        <section>
+            <h2>Room Popularity</h2>
+            <ul>
+                <?php foreach ($roomPopularity as $room): ?>
+                    <li><?php echo htmlspecialchars($room['room_name']); ?>: <?php echo htmlspecialchars($room['total_bookings']); ?> bookings</li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
 
-        <!-- Room Popularity Chart -->
-        <h2>Room Popularity</h2>
-        <canvas id="roomStatsChart"></canvas>
-
-        <!-- Upcoming Bookings -->
-        <h2>Your Upcoming Bookings</h2>
-        <ul>
-            <?php foreach ($upcomingBookings as $booking): ?>
-                <li>
-                    <strong>Room:</strong> <?php echo $booking['room_name']; ?><br>
-                    <strong>Start:</strong> <?php echo $booking['timeslot_start']; ?><br>
-                    <strong>End:</strong> <?php echo $booking['timeslot_end']; ?><br>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Room Popularity Chart (Chart.js)
-        const roomNames = <?php echo json_encode(array_column($roomPopularity, 'room_name')); ?>;
-        const totalBookings = <?php echo json_encode(array_column($roomPopularity, 'total_bookings')); ?>;
-        const ctx = document.getElementById('roomStatsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: roomNames,
-                datasets: [{
-                    label: 'Total Bookings',
-                    data: totalBookings,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                }]
-            },
-            options: { responsive: true }
-        });
-    </script>
+        <section>
+            <h2>Your Upcoming Bookings</h2>
+            <ul>
+                <?php foreach ($upcomingBookings as $booking): ?>
+                    <li>
+                        <?php echo htmlspecialchars($booking['room_name']); ?>: 
+                        <?php echo htmlspecialchars($booking['timeslot_start']); ?> - 
+                        <?php echo htmlspecialchars($booking['timeslot_end']); ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </section>
+    </main>
 </body>
 </html>
