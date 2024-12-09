@@ -26,7 +26,8 @@
             <ul>
                 <li><a href="Dashboard.php">Dashboard</a></li>
                 <li><a href="Analytics.php">Analytics</a></li>
-            </ul>
+            </ul> 
+            \\
         </nav>
     </main>
 </body>
