@@ -1,5 +1,5 @@
 <?php
-require 'db_connection.php'; // Include PDO connection
+require_once 'db_connection.php'; // Include PDO connection
 $error = '';
 
 if (session_status() == PHP_SESSION_NONE) {
