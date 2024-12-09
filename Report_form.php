@@ -21,7 +21,7 @@
 
             <button type="submit">Filter</button>
         </form>
-
+        <br>
         <nav>
             <ul>
                 <li><a href="dashboard.php">Dashboard</a></li>
