@@ -42,6 +42,7 @@
 
         <br>
 
+        <?php if ($user_role === "user"): ?>
         <section>
             <h2>Upcoming Bookings</h2>
             <?php if (empty($upcoming_bookings)): ?>
@@ -60,6 +61,7 @@
                 </ul>
             <?php endif; ?>
         </section>
+        <?php endif; ?>
     </main>
 </body>
 </html>
