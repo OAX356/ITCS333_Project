@@ -24,7 +24,7 @@
             <ul>
                 <li><a href="dashboard.php">Dashboard</a></li>
                 <?php if ($_SESSION["role"] === 'user'): ?>
-                    <li><a href="booking.php">My Bookings</a></li>
+                    <li><a href="booking.php?filter_selector=all">My Bookings</a></li>
                 <?php endif; ?>
                 <?php if ($_SESSION["role"] === 'admin'): ?>
                     <li><a href="admin.php">Admin Panel</a></li>
