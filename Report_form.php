@@ -23,9 +23,10 @@ $rooms = $stmt->fetchAll(PDO::FETCH_COLUMN);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Filter</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         /* Custom styles for responsiveness */
-        @media (max-width: 768px) {
+        @media (max-width: 800px) {
             form {
                 flex-direction: column;
             }

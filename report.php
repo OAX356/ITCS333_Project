@@ -108,6 +108,7 @@ $chartData = generateChartData($reportData, $reportType);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .chart-container {
@@ -115,7 +116,7 @@ $chartData = generateChartData($reportData, $reportType);
             height: 400px;
             width: 100%;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 800px) {
             .chart-container {
                 height: 300px;
             }
