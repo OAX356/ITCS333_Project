@@ -54,9 +54,9 @@ try {
     }
 
     $stmt = $pdo->prepare($query);
-    if ($roomFilter) $stmt->bindValue(':roomFilter', $roomFilter);
-    if ($startDate) $stmt->bindValue(':startDate', $startDate);
-    if ($endDate) $stmt->bindValue(':endDate', $endDate);
+    if ($roomFilter) $stmt->bindparam(':roomFilter', $roomFilter);
+    if ($startDate) $stmt->bindparam(':startDate', $startDate);
+    if ($endDate) $stmt->bindparam(':endDate', $endDate);
     $stmt->execute();
     $reportData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
