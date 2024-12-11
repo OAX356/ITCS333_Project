@@ -28,8 +28,8 @@
                 <?php endif; ?>
                 <?php if ($_SESSION["role"] === 'admin'): ?>
                     <li><a href="admin.php">Admin Panel</a></li>
+                    <li><a href="Report_form.php">Report</a></li>
                 <?php endif; ?>
-                <li><a href="Report_form.php">Report</a></li>
                 <li id="logout"><a href="logout.php">Logout</a></li>
             </ul>
         </nav>
