@@ -65,12 +65,13 @@
                 <h3>Your current booking:</h3>
                 <?php foreach ($user_booking as $booking): ?>
                     <p>You have already booked this room for the timeslot: 
-                    <?php echo date('Y-m-d H:i', strtotime($all_timeslots[$booking["schedule_id"] - 1]['timeslot_start'])); ?> to 
-                    <?php echo date('Y-m-d H:i', strtotime($all_timeslots[$booking["schedule_id"] - 1]['timeslot_end'])); ?>
+                    <?php echo date('Y-m-d H:i', strtotime($booking['timeslot_start'])); ?> to 
+                    <?php echo date('Y-m-d H:i', strtotime($booking['timeslot_end'])); ?>
                     </p>
-                    <a href="roomDetails.php?room_id=<?php echo $room_id; ?>&cancel_booking_id=<?php echo $booking['id']; ?>" class="button">Cancel Booking</a>
+                    <a href="roomDetails.php?room_id=<?php echo $room_id; ?>&cancel_booking_id=<?php echo $booking['id']; ?>" class="button" style="color: red;">Cancel Booking</a>
                 <?php endforeach; ?>
             <?php endif; ?>
+            <br>
             <br>
             <a href="browse.php" class="button">Back to Browse</a>
         <?php endif; ?>

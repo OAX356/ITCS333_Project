@@ -35,7 +35,11 @@ if ($error == '') {
             $timeslots = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             // Check if the user already has a booking for this room
-            $check_booking = "SELECT * FROM Bookings WHERE user_id = :user_id AND room_id = :room_id";
+            $check_booking = "SELECT  b.id, rs.timeslot_start, rs.timeslot_end
+                                FROM Bookings AS b
+                                LEFT JOIN Room_Schedule AS rs on b.schedule_id = rs.id 
+                                WHERE b.user_id = :user_id AND b.room_id = :room_id
+                                ORDER BY timeslot_start";
             $stmt = $pdo->prepare($check_booking);
             $stmt->bindparam(':user_id', $user_id, PDO::PARAM_INT);
             $stmt->bindparam(':room_id', $room_id, PDO::PARAM_INT);
